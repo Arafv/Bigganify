@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
@@ -26,15 +26,37 @@ jobs:
 
       - name: Install System Dependencies
         run: |
-          sudo apt-get update
+          sudo apt-get update || sudo apt-get update --fix-missing
           sudo apt-get install -y \
             build-essential git ffmpeg libsdl2-dev libsdl2-image-dev \
             libsdl2-mixin-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev \
-            libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0-dev \
-            gstreamer1.0-plugins-base gstreamer1.0-plugins-good libsqlite3-dev \
-            sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev libgmp3-dev \
-            libncurses5-dev libncursesw5-dev libreadline-dev autoconf automake \
-            libtool pkg-config cmake ant ccache unzip zip
+            libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev \
+            sqlite3 bzip2 libbz2-dev libssl-dev openssl libffi-dev \
+            libncurses-dev libreadline-dev autoconf automake \
+            libtool pkg-config cmake ccache unzip zip
+
+      - name: Install Buildozer and Cython
+        run: |
+          pip install --upgrade pip
+          pip install "cython<3.0.0" buildozer
+
+      - name: Configure Bigganify App Name
+        run: |
+          if [ ! -f buildozer.spec ]; then
+            buildozer init
+          fi
+          sed -i 's/^title = .*/title = Bigganify/' buildozer.spec
+          sed -i 's/^package.name = .*/package.name = bigganify/' buildozer.spec
+
+      - name: Build APK with Buildozer
+        run: |
+          buildozer -v android debug
+
+      - name: Upload Bigganify APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bigganify-APK
+          path: bin/*.apk            libtool pkg-config cmake ant ccache unzip zip
 
       - name: Install Buildozer and Cython
         run: |
