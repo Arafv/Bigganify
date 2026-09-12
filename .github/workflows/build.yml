@@ -41,6 +41,30 @@ jobs:
           pip install --upgrade pip
           pip install "cython<3.0.0" buildozer
 
+      - name: Configure Bigganify App Name
+        run: |
+          if [ ! -f buildozer.spec ]; then
+            buildozer init
+          fi
+          sed -i 's/^title = .*/title = Bigganify/' buildozer.spec
+          sed -i 's/^package.name = .*/package.name = bigganify/' buildozer.spec
+
+      - name: Build APK with Buildozer
+        run: |
+          buildozer -v android debug
+
+      - name: Upload Bigganify APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bigganify-APK
+          path: bin/*.apk
+            libtool pkg-config cmake ant ccache unzip zip
+
+      - name: Install Buildozer and Cython
+        run: |
+          pip install --upgrade pip
+          pip install "cython<3.0.0" buildozer
+
       - name: Generate or Update buildozer.spec
         run: |
           if [ ! -f buildozer.spec ]; then
