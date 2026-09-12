@@ -39,6 +39,26 @@ jobs:
           python -m pip install "cython==0.29.34"
 
       - name: Build APK
+        run: |
+          yes | buildozer -v android debug
+
+      - name: Find APK
+        run: |
+          echo "Searching for APK..."
+          find . -type f -name "*.apk" -print
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bigganify-APK
+          path: |
+            bin/*.apk
+            .buildozer/**/*.apk
+          if-no-files-found: error          python -m pip install --upgrade pip setuptools
+          python -m pip install buildozer
+          python -m pip install "cython==0.29.34"
+
+      - name: Build APK
         run: buildozer -v android debug
 
       - name: Show APK files
