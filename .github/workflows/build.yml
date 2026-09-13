@@ -34,7 +34,33 @@ jobs:
             libncursesw5-dev libtinfo6 cmake \
             libffi-dev libssl-dev gettext autopoint \
             ccache libsdl2-dev libsdl2-image-dev \
-            libsdl2-mixer-dev libsdl2-ttf-dev
+            libsdl2-mixer-dev libsdl2-ttf-dev wget
+
+          python -m pip install --upgrade pip setuptools
+          python -m pip install "cython<3.0.0" buildozer
+
+      - name: Pre-install Android Command Line Tools (sdkmanager)
+        run: |
+          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d ~/.buildozer/android/platform/android-sdk/cmdline-tools/
+          mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/cmdline-tools ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
+          rm cmdline-tools.zip
+
+      - name: Auto-accept Android SDK Licenses
+        run: |
+          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+
+      - name: Build APK with Buildozer
+        run: |
+          buildozer -v android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bigganify-APK
+          path: bin/*.apk
+          if-no-files-found: error            libsdl2-mixer-dev libsdl2-ttf-dev
 
           python -m pip install --upgrade pip setuptools
           python -m pip install "cython<3.0.0" buildozer
