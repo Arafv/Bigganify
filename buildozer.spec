@@ -1,40 +1,35 @@
 [app]
 
-# (str) Title of your application
+# Title & metadata
 title = Bigganify
-
-# (str) Package name
 package.name = bigganify
-
-# (str) Package domain (needed for android packaging)
 package.domain = org.bigganify
 
-# (str) Source code where the main.py live
+# Source code settings
 source.dir = .
-
-# (list) Source files to include (let empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas
-
-# (list) List of directory to exclude (let empty to not exclude anything)
 source.exclude_dirs = tests, bin, venv, .git, .github
 
-# (str) Application versioning
+# Version & requirements
 version = 0.1
-
-# (list) Application requirements
-# Comma separated e.g. requirements = sqlite3,kivy
 requirements = python3,kivy
 
-# (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
+# UI configuration
 orientation = portrait
-
-# (bool) Indicate if the application should be fullscreen or not
 fullscreen = 0
 
-#
-# Android specific
-#
+# Android SDK / NDK parameters
+android.permissions = INTERNET
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.archs = arm64-v8a, armeabi-v7a
+android.skip_update = False
 
+[buildozer]
+
+log_level = 2
+warn_on_root = 1
 # (list) Permissions
 android.permissions = INTERNET
 
