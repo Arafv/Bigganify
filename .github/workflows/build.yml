@@ -11,31 +11,49 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Set up Java
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Install dependencies
+      - name: Install system packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip autoconf automake libtool \
-            pkg-config zlib1g-dev libncurses5-dev \
-            libncursesw5-dev libtinfo6 cmake \
-            libffi-dev libssl-dev gettext autopoint \
-            ccache wget
 
-          python -m pip install --upgrade pip setuptools
+          sudo apt-get install -y \
+            git \
+            zip \
+            unzip \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo6 \
+            cmake \
+            libffi-dev \
+            libssl-dev \
+            gettext \
+            autopoint \
+            ccache \
+            wget
+
+      - name: Install Python packages
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install setuptools
           python -m pip install buildozer
           python -m pip install "cython==0.29.34"
 
@@ -43,58 +61,10 @@ jobs:
         run: |
           buildozer -v android debug
 
-      - name: Find APK
+      - name: Check APK
         run: |
-          echo "APK files:"
+          echo "===== APK FILES ====="
           find . -type f -name "*.apk" -print
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Bigganify-APK
-          path: bin/*.apk
-          if-no-files-found: error            libsdl2-mixer-dev libsdl2-ttf-dev wget
-
-          python -m pip install --upgrade pip setuptools
-          python -m pip install "cython<3.0.0" buildozer
-
-      - name: Pre-install Android Command Line Tools (sdkmanager)
-        run: |
-          mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
-          wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-          unzip -q cmdline-tools.zip -d ~/.buildozer/android/platform/android-sdk/cmdline-tools/
-          mv ~/.buildozer/android/platform/android-sdk/cmdline-tools/cmdline-tools ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest
-          rm cmdline-tools.zip
-
-      - name: Auto-accept Android SDK Licenses
-        run: |
-          yes | ~/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
-      - name: Build APK with Buildozer
-        run: |
-          buildozer -v android debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Bigganify-APK
-          path: bin/*.apk
-          if-no-files-found: error            libsdl2-mixer-dev libsdl2-ttf-dev
-
-          python -m pip install --upgrade pip setuptools
-          python -m pip install "cython<3.0.0" buildozer
-
-      - name: Pre-accept Android SDK Licenses
-        run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          mkdir -p ~/.buildozer/android/platform/android-sdk/licenses
-          echo -e "\n89330172545fca167fb65f318c73420e149f45aea\n24333f8a63b6825ea9c5514f83c2829b004d1fee\nd56f5187479451eabf01fb78af6dfcb131a6481e\ne675671948066f7312f3f5e32a961cd929623259\n84831b940964653774614a0286b88140a4bf5c74\n7855a2973034d359c173264c78791992e56e5a0d" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-license
-          echo -e "\n84831b940964653774614a0286b88140a4bf5c74" > ~/.buildozer/android/platform/android-sdk/licenses/android-sdk-preview-license
-
-      - name: Build APK with Buildozer
-        run: |
-          buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
