@@ -1,40 +1,29 @@
 [app]
 
-# Title & metadata
 title = Bigganify
 package.name = bigganify
-package.domain = org.bigganify
+package.domain = com.bigganify
 
-# Source code settings
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
-source.exclude_dirs = tests, bin, venv, .git, .github
+source.include_exts = py,png,jpg,jpeg,kv,atlas,json
 
-# Version & requirements
-version = 0.1
+version = 1.0.0
+
 requirements = python3,kivy
 
-# UI configuration
 orientation = portrait
 fullscreen = 0
 
-# Android SDK / NDK parameters
+android.archs = arm64-v8a
 android.permissions = INTERNET
-android.api = 33
-android.minapi = 21
-android.ndk = 25b
-android.archs = arm64-v8a, armeabi-v7a
-android.skip_update = False
+android.accept_sdk_license = True
+android.allow_backup = True
+
 
 [buildozer]
 
 log_level = 2
-warn_on_root = 1
-# (list) Permissions
-android.permissions = INTERNET
-
-# (int) Target Android API, should be as high as possible.
-android.api = 33
+warn_on_root = 0android.api = 33
 
 # (int) Minimum API your APK will support.
 android.minapi = 21
