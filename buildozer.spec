@@ -11,7 +11,7 @@ orientation = portrait
 fullscreen = 0
 
 android.permissions = INTERNET
-android.api = 34
+android.api = 33
 android.minapi = 21
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
