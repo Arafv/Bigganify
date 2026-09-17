@@ -24,49 +24,29 @@ jobs:
       - name: Install Buildozer
         run: pip install --upgrade buildozer cython
 
-      - name: Build APK (auto-accept SDK licenses)
+      - name: Pre-download Android SDK (allowed to fail here)
         run: |
-          yes | buildozer -v android debug
+          buildozer android debug || true
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: bigganify-apk
-          path: bin/*.apk            autoconf \
-            automake \
-            libtool \
-            pkg-config \
-            zlib1g-dev \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo6 \
-            cmake \
-            libffi-dev \
-            libssl-dev \
-            gettext \
-            autopoint \
-            ccache \
-            wget
-
-      - name: Install Python packages
+      - name: Accept all SDK licenses explicitly
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install setuptools
-          python -m pip install buildozer
-          python -m pip install "cython==0.29.34"
+          SDKMANAGER=$(find ~/.buildozer -name "sdkmanager" -path "*cmdline-tools*" | head -n 1)
+          echo "Using sdkmanager at: $SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses || true
 
       - name: Build APK
         run: |
           buildozer -v android debug
 
-      - name: Check APK
-        run: |
-          echo "===== APK FILES ====="
-          find . -type f -name "*.apk" -print
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Bigganify-APK
+          name: bigganify-apk
           path: bin/*.apk
-          if-no-files-found: error
+
+      - name: Upload full build log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: .buildozer/android/platform/build-*/build.log
