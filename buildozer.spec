@@ -13,8 +13,10 @@ fullscreen = 0
 android.permissions = INTERNET
 android.api = 33
 android.minapi = 21
+android.build_tools = 34.0.0
 android.archs = arm64-v8a, armeabi-v7a
 android.allow_backup = True
+android.accept_sdk_license = True
 
 log_level = 2
 warn_on_root = 1
