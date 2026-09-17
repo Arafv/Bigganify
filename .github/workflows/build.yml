@@ -24,19 +24,9 @@ jobs:
       - name: Install Buildozer
         run: pip install --upgrade buildozer cython
 
-      - name: Pre-download Android SDK (allowed to fail here)
-        run: |
-          buildozer android debug || true
-
-      - name: Accept all SDK licenses explicitly
-        run: |
-          SDKMANAGER=$(find ~/.buildozer -name "sdkmanager" -path "*cmdline-tools*" | head -n 1)
-          echo "Using sdkmanager at: $SDKMANAGER"
-          yes | "$SDKMANAGER" --licenses || true
-
       - name: Build APK
         run: |
-          buildozer -v android debug
+          yes | buildozer -v android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
